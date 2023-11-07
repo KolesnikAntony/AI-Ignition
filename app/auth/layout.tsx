@@ -1,4 +1,4 @@
-import {Grid} from '@mui/material';
+import {Box, Grid} from '@mui/material';
 import {ReactNode} from 'react';
 import Image from 'next/image';
 import NotificationProvider from '@/provider/notification-provider';
@@ -11,14 +11,16 @@ export default function AuthLayout({children}: {children: ReactNode}) {
           {children}
         </Grid>
         <Grid item xs='auto'>
-          <Image
-            src='/images/bg.png'
-            layout='fix'
-            width={384}
-            height={953}
-            objectFit='contain'
-            alt='Picture of the author'
-          />
+          <Box>
+            <Image
+              src='/images/bg.png'
+              layout='fix'
+              width={384}
+              height={953}
+              objectFit='contain'
+              alt='Picture of the author'
+            />
+          </Box>
         </Grid>
       </Grid>
     </NotificationProvider>
