@@ -10,19 +10,16 @@ import {SingUpValues} from '@/types/form-types';
 const authConfig: AuthOptions = {
   providers: [
     GoogleProvider({
-      clientId:
-        '657725595308-ea5jr6dc4rc0i47p0k5ji107fj8ekhmp.apps.googleusercontent.com',
-      clientSecret: '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',
+      clientId: process.env.GOOGLE_ID!,
+      clientSecret: process.env.GOOGLE_SECRET!,
     }),
     FBProvider({
-      clientId:
-        '1757645367992104',
-      clientSecret: '65c070316c4d59fd7d24ee8b41d72935',
+      clientId: process.env.FB_ID!,
+      clientSecret: process.env.FB_SECRET!,
     }),
     TwitterProvider({
-      clientId:
-        'O5kDqAm87eEa81EUo2zjX41uj',
-      clientSecret: 'ig6l6YdfqN3vaCVINaNi3J5Jhg5MTuaLN8Ko3DzUwGvo1639Nf',
+      clientId: process.env.TWITTER_ID!,
+      clientSecret: process.env.TWITTER_SECRET!,
     }),
     Credentials({
       credentials: {
