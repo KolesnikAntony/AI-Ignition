@@ -1,64 +1,59 @@
 'use client';
 import React from 'react';
-import {useForm, FormProvider} from 'react-hook-form';
-import {Button, Grid, Typography} from '@mui/material';
+import {FormProvider, SubmitHandler, useForm} from 'react-hook-form';
+import {Grid} from '@mui/material';
 import MyTextField from '@/components/forms/TextField';
 import ToggleField from '@/components/forms/ToggleField';
 import {yupResolver} from '@hookform/resolvers/yup';
 import singUpSchema from '@/schema/schemaSignUp';
-import Link from 'next/link';
+import {PD} from '@/constants/pages-data';
+import {signUpTextFields} from '@/constants/text-fields';
+import Terms from '@/components/common/Terms';
+import SubmitButton from '@/components/buttons/SubmitButton';
+import {signIn} from 'next-auth/react';
+import {useRouter} from 'next/navigation';
+import {SingUpValues} from '@/types/form-types';
+import {useNotification} from '@/provider/notification-provider';
 
-type SubmitData = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  subscribe: boolean;
-};
+const SignUpForm = () => {
+  const {signup} = PD.buttons;
+  const router = useRouter();
+  const methods = useForm<SingUpValues>({resolver: yupResolver(singUpSchema)});
+  const {showError} = useNotification();
+  const onSubmit: SubmitHandler<SingUpValues> = async (data) => {
+    const res = await signIn('credentials', {
+      ...data,
+      redirect: false,
+      type: 'signup',
+    });
 
-const SignUp = () => {
-  const methods = useForm({resolver: yupResolver(singUpSchema)});
+    if (res?.error) {
+      showError(res?.error);
+      return;
+    }
 
-  const onSubmit = (data: any) => {
-    console.log(JSON.stringify(data, null, 2));
+    if (res && !res.error) {
+      router.push('/');
+    }
   };
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid container columnSpacing={4} rowSpacing={4}>
-          <Grid item xs={6}>
-            <MyTextField id='first_name' label='First Name' />
-          </Grid>
-          <Grid item xs={6}>
-            <MyTextField id='last_name' label='Last Name' />
-          </Grid>
-          <Grid item xs={12}>
-            <MyTextField id='email' label='Email' />
-          </Grid>
-          <Grid item xs={12}>
-            <MyTextField id='password' label='Password' type='password' />
-          </Grid>
+          {signUpTextFields.map((el, index) => (
+            <Grid key={el.id} item xs={index > 1 ? 12 : 6}>
+              <MyTextField {...el} />
+            </Grid>
+          ))}
           <Grid item xs={12}>
             <ToggleField />
           </Grid>
           <Grid item xs>
-            <Typography className='text-[12px] text-[#4C4D4F]'>
-              <span className='opacity-50'>
-                By clicking below you agree to our
-              </span>{' '}
-              <Link href='/'>Terms of Service</Link>{' '}
-              <span className='opacity-50'>and </span>
-              <Link href='/'>Privacy Policy</Link>
-            </Typography>
+            <Terms />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              className='w-full bg-black rounded-[24px] text-[14px] leading-5 normal-case h-12'
-              type='submit'
-              variant='contained'>
-              Sign up
-            </Button>
+            <SubmitButton text={signup} />
           </Grid>
         </Grid>
       </form>
@@ -66,4 +61,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpForm;

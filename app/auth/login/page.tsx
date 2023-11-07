@@ -1,11 +1,14 @@
-import React, { FC } from "react";
+import React from 'react';
+import FormWrapper from '@/components/wrappers/FormWrapper';
+import LoginForm from '@/components/forms/LoginForm';
+import {EnumPage} from '@/enums/enums';
 
-const SignUp = () => {
+const Login = () => {
   return (
-    <div>
-      test info
-    </div>
+    <FormWrapper page={EnumPage.LOGIN}>
+      <LoginForm />
+    </FormWrapper>
   );
 };
 
-export default SignUp;
+export default Login;

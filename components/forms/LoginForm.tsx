@@ -1,40 +1,55 @@
+'use client';
+
 import React from 'react';
-import {Button, Grid, TextField, Typography} from '@mui/material';
-import {FormProvider, useForm} from 'react-hook-form';
+import {Grid} from '@mui/material';
+import {FormProvider, SubmitHandler, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-import singUpSchema from '@/schema/schemaSignUp';
 import MyTextField from '@/components/forms/TextField';
-import ToggleField from '@/components/forms/ToggleField';
-import Link from 'next/link';
 import schemaLogIn from '@/schema/schemaLogIn';
+import {PD} from '@/constants/pages-data';
+import {loginTextFields} from '@/constants/text-fields';
+import SubmitButton from '@/components/buttons/SubmitButton';
+import {useRouter} from 'next/navigation';
+import {signIn} from 'next-auth/react';
+import {LoginValues} from '@/types/form-types';
+import {useNotification} from '@/provider/notification-provider';
 
-const Login = () => {
-  const methods = useForm({resolver: yupResolver(schemaLogIn)});
+const LoginForm = () => {
+  const {login} = PD.buttons;
+  const methods = useForm<LoginValues>({resolver: yupResolver(schemaLogIn)});
+  const router = useRouter();
+  const {showError} = useNotification();
 
-  const onSubmit = (data: any) => {
-    console.log(JSON.stringify(data, null, 2));
+  const onSubmit: SubmitHandler<LoginValues> = async (data) => {
+    const res = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+      type: 'login',
+    });
+    console.log(res, '---res');
+
+    if (res?.error) {
+      showError(res?.error);
+      return;
+    }
+
+    if (res && !res.error) {
+      router.push('/');
+    }
   };
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid container spacing={4}>
+          {loginTextFields.map((el) => (
+            <Grid key={el.id} item xs={12}>
+              <MyTextField {...el} />
+            </Grid>
+          ))}
           <Grid item xs={12}>
-            <MyTextField id='email' label='Email' />
-          </Grid>
-          <Grid item xs={12}>
-            <MyTextField id='password' label='Password' type='password' />
-          </Grid>
-          <Grid item xs={12}>
-            <ToggleField />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              className='w-full bg-black rounded-[24px] text-[14px] leading-5 normal-case h-12'
-              type='submit'
-              variant='contained'>
-              Log in
-            </Button>
+            <SubmitButton text={login} />
           </Grid>
         </Grid>
       </form>
@@ -42,4 +57,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

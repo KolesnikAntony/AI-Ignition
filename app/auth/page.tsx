@@ -1,10 +1,13 @@
-const Page = () => {
+import SignUpForm from '@/components/forms/SignUpForm';
+import FormWrapper from '@/components/wrappers/FormWrapper';
+import {EnumPage} from '@/enums/enums';
 
-    return (
-        <h1>
-            Some information
-        </h1>
-    );
+const Auth = () => {
+  return (
+    <FormWrapper page={EnumPage.SIGN_UP}>
+      <SignUpForm />
+    </FormWrapper>
+  );
 };
 
-export default Page;
+export default Auth;
