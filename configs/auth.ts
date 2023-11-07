@@ -22,17 +22,14 @@ const authConfig: AuthOptions = {
       clientSecret: process.env.TWITTER_SECRET!,
     }),
     Credentials({
+      id: 'login-cred',
       credentials: {
-        first_name: {label: 'first_name', type: 'string'},
-        last_name: {label: 'last_name', type: 'string'},
         email: {
           label: 'email',
           type: 'email',
           required: true,
         },
         password: {label: 'password', type: 'password', required: true},
-        subscribe: {label: 'subscribe', type: 'boolean'},
-        type: {type: 'string'},
       },
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) {
@@ -42,38 +39,66 @@ const authConfig: AuthOptions = {
           credentials?.email,
         );
 
-        if (credentials?.type === 'login') {
-          if (currentUser) {
-            const isValidPassword = compareSync(
-              credentials.password,
-              currentUser.password,
-            );
-            if (isValidPassword) {
-              const {password, ...userWithoutPassword} = currentUser;
-              return userWithoutPassword as User;
-            }
-            throw new Error('Invalid password');
-          }else{
-            throw new Error('No existing User, please Sign Up');
+        if (currentUser) {
+          const isValidPassword = compareSync(
+            credentials.password,
+            currentUser.password,
+          );
+          if (isValidPassword) {
+            const {password, ...userWithoutPassword} = currentUser;
+            return userWithoutPassword as User;
           }
+          throw new Error('Invalid password');
+        } else {
+          throw new Error('No existing User, please Sign Up');
         }
-        if (credentials?.type === 'signup') {
-          if (currentUser) {
-            throw new Error('User already exist');
-          }
-          if (!credentials?.first_name || !credentials?.last_name) {
-            throw new Error('Please provide first name or last name');
-          }
-          const payload: SingUpValues = {
-            email: credentials.email,
-            password: credentials.password,
-            first_name: credentials.first_name,
-            last_name: credentials.last_name,
-            subscribe: !!credentials.subscribe,
-          };
-          return await UserService.registration(payload);
+      },
+    }),
+
+    Credentials({
+      id: 'signup-cred',
+      credentials: {
+        first_name: {label: 'first_name', type: 'string', required: true},
+        last_name: {label: 'last_name', type: 'string', required: true},
+        email: {
+          label: 'email',
+          type: 'email',
+          required: true,
+        },
+        password: {label: 'password', type: 'password', required: true},
+        subscribe: {label: 'subscribe', type: 'boolean', required: true},
+      },
+      authorize: async (credentials) => {
+        if (
+          !credentials?.email ||
+          !credentials?.password ||
+          !credentials?.first_name ||
+          !credentials?.last_name
+        ) {
+          throw new Error('Please provide all data');
         }
-        throw new Error('Some server error');
+        const currentUser = await UserService.checkExistUser(
+          credentials?.email,
+        );
+
+        if (currentUser) {
+          throw new Error('User already exist');
+        }
+        if (!credentials?.first_name || !credentials?.last_name) {
+          throw new Error('Please provide first name or last name');
+        }
+        const payload: SingUpValues = {
+          email: credentials.email,
+          password: credentials.password,
+          first_name: credentials.first_name,
+          last_name: credentials.last_name,
+          subscribe: !!credentials.subscribe,
+        };
+        const newUser = await UserService.registration(payload);
+        if (!newUser) {
+          throw new Error('Please try again');
+        }
+        return newUser;
       },
     }),
   ],

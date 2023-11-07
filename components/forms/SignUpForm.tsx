@@ -21,10 +21,9 @@ const SignUpForm = () => {
   const methods = useForm<SingUpValues>({resolver: yupResolver(singUpSchema)});
   const {showError} = useNotification();
   const onSubmit: SubmitHandler<SingUpValues> = async (data) => {
-    const res = await signIn('credentials', {
+    const res = await signIn('signup-cred', {
       ...data,
-      redirect: false,
-      type: 'signup',
+      redirect: false
     });
 
     if (res?.error) {

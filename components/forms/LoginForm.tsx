@@ -21,13 +21,11 @@ const LoginForm = () => {
   const {showError} = useNotification();
 
   const onSubmit: SubmitHandler<LoginValues> = async (data) => {
-    const res = await signIn('credentials', {
+    const res = await signIn('login-cred', {
       email: data.email,
       password: data.password,
       redirect: false,
-      type: 'login',
     });
-    console.log(res, '---res');
 
     if (res?.error) {
       showError(res?.error);
