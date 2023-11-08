@@ -1,6 +1,6 @@
 ## Getting Started
 
-First, install node-models;
+First, install node-modeules:
 
 ```bash
 npm install
@@ -9,7 +9,7 @@ yarn install
 ```
 Second, rename file `env.example` to `.env`;
 
-Third, start project
+Third, start project:
 ```bash
 npm run dev
 # or
