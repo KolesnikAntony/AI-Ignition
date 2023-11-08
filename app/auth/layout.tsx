@@ -11,14 +11,16 @@ export default function AuthLayout({children}: {children: ReactNode}) {
           {children}
         </Grid>
         <Grid item xs='auto'>
-          <Box>
+          <Box display={{xs: 'none', md: 'block'}}>
             <Image
+              style={{
+                objectFit: 'contain',
+              }}
               src='/images/bg.png'
-              layout='fix'
+              priority={true}
               width={384}
               height={953}
-              objectFit='contain'
-              alt='Picture of the author'
+              alt='auth'
             />
           </Box>
         </Grid>

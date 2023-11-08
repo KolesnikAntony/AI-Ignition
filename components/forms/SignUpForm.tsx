@@ -41,7 +41,7 @@ const SignUpForm = () => {
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Grid container columnSpacing={4} rowSpacing={4}>
           {signUpTextFields.map((el, index) => (
-            <Grid key={el.id} item xs={index > 1 ? 12 : 6}>
+            <Grid key={el.id} item xs={12} md={index > 1 ? 12 : 6}>
               <MyTextField {...el} />
             </Grid>
           ))}

@@ -1,11 +1,11 @@
 import React from 'react';
 import {Checkbox, FormControlLabel, Typography} from '@mui/material';
 import {Controller, useFormContext} from 'react-hook-form';
-
+import {PT_Serif} from 'next/font/google';
+import cn from 'classnames';
+const inter = PT_Serif({weight: '400', subsets: ['latin']});
 const ToggleField = () => {
-  const {
-    control
-  } = useFormContext();
+  const {control} = useFormContext();
   return (
     <>
       <FormControlLabel
@@ -17,7 +17,11 @@ const ToggleField = () => {
             render={({field}) => <Checkbox color='primary' {...field} />}
           />
         }
-        label={<Typography className='text-[12px]'>Subscribe to our monthly newsletter</Typography>}
+        label={
+          <Typography className={cn('text-[12px]', inter.className)}>
+            Subscribe to our monthly newsletter
+          </Typography>
+        }
       />
     </>
   );
