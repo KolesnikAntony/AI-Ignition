@@ -74,6 +74,7 @@ const authConfig: AuthOptions = {
         subscribe: {label: 'subscribe', type: 'boolean', required: true},
       },
       authorize: async (credentials) => {
+        console.log(credentials, '---')
         if (
           !credentials?.email ||
           !credentials?.password ||
@@ -82,7 +83,6 @@ const authConfig: AuthOptions = {
         ) {
           throw new Error('Please provide all data');
         }
-
         const currentUser = await prisma.user.findFirst({
           where: {
             email: credentials.email,
@@ -100,7 +100,7 @@ const authConfig: AuthOptions = {
           password: hashSync(credentials.password, 7),
           first_name: credentials.first_name,
           last_name: credentials.last_name,
-          subscribe: !!credentials.subscribe,
+          subscribe: credentials.subscribe === 'true',
         };
 
         const newUserData = await prisma.user.create({data});
