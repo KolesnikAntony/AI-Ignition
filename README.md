@@ -8,6 +8,7 @@ npm install
 yarn install
 ```
 Second, rename file `env.example` to `.env`;
+if you have fb, google or twitter dev-accounts you can use your clientId and clientSecret
 
 Third, start project:
 ```bash
