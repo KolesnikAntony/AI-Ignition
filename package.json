@@ -14,6 +14,8 @@
     "@hookform/resolvers": "^3.3.2",
     "@material-tailwind/react": "^2.1.4",
     "@mui/material": "^5.14.17",
+    "@next-auth/prisma-adapter": "^0.4.4-canary.81",
+    "@prisma/client": "^5.5.2",
     "bcrypt": "^5.1.1",
     "classnames": "^2.3.2",
     "mongoose": "^8.0.0",
@@ -36,6 +38,7 @@
     "eslint-config-next": "14.0.1",
     "postcss": "^8.4.31",
     "prettier": "3.0.3",
+    "prisma": "^5.5.2",
     "tailwindcss": "^3.3.5",
     "typescript": "^5"
   }

@@ -3,9 +3,11 @@ import GoogleProvider from 'next-auth/providers/google';
 import FBProvider from 'next-auth/providers/facebook';
 import TwitterProvider from 'next-auth/providers/twitch';
 import Credentials from 'next-auth/providers/credentials';
-import UserService from '@/services/UserService';
-import {compareSync} from 'bcrypt';
+import {compareSync, hashSync} from 'bcrypt';
 import {SingUpValues} from '@/types/form-types';
+import {PrismaClient} from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const authConfig: AuthOptions = {
   providers: [
@@ -35,9 +37,12 @@ const authConfig: AuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Please provide email or password');
         }
-        const currentUser = await UserService.checkExistUser(
-          credentials?.email,
-        );
+
+        const currentUser = await prisma.user.findFirst({
+          where: {
+            email: credentials.email,
+          },
+        });
 
         if (currentUser) {
           const isValidPassword = compareSync(
@@ -77,9 +82,12 @@ const authConfig: AuthOptions = {
         ) {
           throw new Error('Please provide all data');
         }
-        const currentUser = await UserService.checkExistUser(
-          credentials?.email,
-        );
+
+        const currentUser = await prisma.user.findFirst({
+          where: {
+            email: credentials.email,
+          },
+        });
 
         if (currentUser) {
           throw new Error('User already exist');
@@ -87,17 +95,20 @@ const authConfig: AuthOptions = {
         if (!credentials?.first_name || !credentials?.last_name) {
           throw new Error('Please provide first name or last name');
         }
-        const payload: SingUpValues = {
+        const data: SingUpValues = {
           email: credentials.email,
-          password: credentials.password,
+          password: hashSync(credentials.password, 7),
           first_name: credentials.first_name,
           last_name: credentials.last_name,
           subscribe: !!credentials.subscribe,
         };
-        const newUser = await UserService.registration(payload);
+
+        const newUserData = await prisma.user.create({data});
+        const {password, ...newUser} = newUserData;
         if (!newUser) {
           throw new Error('Please try again');
         }
+
         return newUser;
       },
     }),
