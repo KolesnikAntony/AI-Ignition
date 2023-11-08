@@ -74,7 +74,6 @@ const authConfig: AuthOptions = {
         subscribe: {label: 'subscribe', type: 'boolean', required: true},
       },
       authorize: async (credentials) => {
-        console.log(credentials, '---')
         if (
           !credentials?.email ||
           !credentials?.password ||

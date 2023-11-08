@@ -26,7 +26,7 @@ const Home = () => {
             background:
               'linear-gradient(109deg, #C5DCE4 25.3%, #DBB898 82.65%)',
           }}>
-          <Typography className={cn(inter, 'text-[40px]')}>
+          <Typography className={cn(inter.className, 'text-[40px]')}>
             Create CV with AI
           </Typography>
         </Card>
